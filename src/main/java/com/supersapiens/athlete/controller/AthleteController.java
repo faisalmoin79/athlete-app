@@ -1,6 +1,10 @@
 package com.supersapiens.athlete.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,29 +22,40 @@ public class AthleteController {
     private AthleteService service;
 
 
-
     @RequestMapping(value= "/athlete/add", method= RequestMethod.POST)
-    public Athlete createAthlete(@RequestBody Athlete athlete) {
+    public ResponseEntity<Object> createAthlete(@RequestBody Athlete athlete) {
         // TODO
-    	return service.saveOrUpdateAthlete(athlete);
+    	athlete = service.saveOrUpdateAthlete(athlete);
+    	Map<String, Object> responseMap = new HashMap<String, Object>();
+    	responseMap.put("message", "Athlete created successfully");
+    	responseMap.put("athlete",athlete );
+    	
+    	return ResponseEntity.ok(responseMap);
     	
     }
 
     @RequestMapping(value= "/athlete/update/{id}", method= RequestMethod.PUT)
-    public Athlete updateAthlete(@RequestBody Athlete athlete, @PathVariable int id) throws Exception {
+    public ResponseEntity<Object> updateAthlete(@RequestBody Athlete athlete, @PathVariable int id) throws Exception {
         // TODO
-    	return service.saveOrUpdateAthlete(athlete);
+    	Map<String, Object> responseMap = new HashMap<String, Object>();
+    	responseMap.put("message", "Athlete created successfully");
+    	responseMap.put("athlete",athlete );
+    	
+    	return ResponseEntity.ok(responseMap);
     }
 
     @RequestMapping(value= "/athlete/{id}", method= RequestMethod.GET)
-    public Athlete getAthleteById(@PathVariable int id) throws Exception {
+    public ResponseEntity<Athlete>  getAthleteById(@PathVariable int id) throws Exception {
         // TODO
-         return service.getAthlete(id);
+    	return ResponseEntity.ok(service.getAthlete(id));
     }
     
     @RequestMapping(value= "/athlete/delete/{id}", method= RequestMethod.DELETE)
-    public void deleteAthleteById(@PathVariable int id) throws Exception {
+    public ResponseEntity<Object> deleteAthleteById(@PathVariable int id) throws Exception {
         service.deleteAthlete(id);
+        Map<String, Object> responseMap = new HashMap<String, Object>();
+    	responseMap.put("message", "Athlete updated successfully");
+    	return ResponseEntity.ok(responseMap);
     }
 
 }
