@@ -27,4 +27,35 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(),
 				HttpStatus.BAD_REQUEST, request);
 	}
+	
+	@Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers,
+                                                             HttpStatus status, WebRequest request) {
+        ApiError error = new ApiError();
+        error.setTimeStamp(new Date());
+        error.setStatus(status.value());
+        error.setError(status.getReasonPhrase());
+        error.setMessage(body != null ? body.toString() : ex.getMessage());
+        
+        String requestURI = ((ServletWebRequest) request).getRequest().getRequestURI();
+        error.setPath(requestURI);
+        
+        log.debug("error occured with these details {}",error);
+        log.error("Error occured while processing request {}, with error:  {}", requestURI,ex.getMessage());
+        ResponseEntity<Object> responseEntity = super.handleExceptionInternal(ex, error, headers, status, request);
+
+        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		ReqTransactionTypesEnum transactionType = (ReqTransactionTypesEnum) requestAttributes.getAttribute(TRANSACTION_TYPE, RequestAttributes.SCOPE_REQUEST);
+        if (transactionType != null) {
+        	String logType = (String)requestAttributes.getAttribute(LOG_TYPE, RequestAttributes.SCOPE_REQUEST);
+        	boolean inComing = StringUtils.isNotEmpty(logType) && API_LOG_TYPE_OUTGOING.equals(logType) ? false: true;
+
+            BaseTransactionLog baseTransactionLog = transactionLogService.saveTransactionLog(null, inComing,
+                    transactionType, status);
+            error.setTrackingNumber(baseTransactionLog instanceof IncomingTransactionLog ?
+                    ((IncomingTransactionLog) baseTransactionLog).getIncomingTransactionId()
+                    : ((OutgoingTransactionLog) baseTransactionLog).getOutgoingTransactionId());
+        }
+        return responseEntity;
+    }
 }
