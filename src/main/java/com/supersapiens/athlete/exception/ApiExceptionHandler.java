@@ -2,6 +2,7 @@ package com.supersapiens.athlete.exception;
 
 import java.util.Date;
 
+import org.hibernate.PropertyValueException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AthleteNotFoundException.class)
-    protected ResponseEntity<Object> handleCustomerException(AthleteNotFoundException e,
+    protected ResponseEntity<Object> handleAthleteException(AthleteNotFoundException e,
                                                                     WebRequest request) {
         return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(),
                 e.getHttpStatus(), request);
@@ -32,13 +33,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				HttpStatus.BAD_REQUEST, request);
 	}
 	
+	@ExceptionHandler(PropertyValueException.class)
+	protected ResponseEntity<Object> handlePropertyValueException(PropertyValueException e,
+																	WebRequest request) {
+		return handleExceptionInternal(e, e.getMessage(), new HttpHeaders(),
+				HttpStatus.BAD_REQUEST, request);
+	}
+	
 	@Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers,
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
                                                              HttpStatus status, WebRequest request) {
         String requestURI = ((ServletWebRequest) request).getRequest().getRequestURI();
         ApiError error = ApiError.builder()
         		.timeStamp(new Date())
-        		.errorCode(status.getReasonPhrase())
+        		.errorType(status.getReasonPhrase())
         		.message(body != null ? body.toString() : ex.getMessage())
         		.path(requestURI).build();
         

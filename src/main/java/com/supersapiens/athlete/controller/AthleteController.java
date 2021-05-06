@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.supersapiens.athlete.exception.AthleteNotFoundException;
 import com.supersapiens.athlete.model.Athlete;
 import com.supersapiens.athlete.service.AthleteService;
 
@@ -37,8 +38,19 @@ public class AthleteController {
     @RequestMapping(value= "/athlete/update/{id}", method= RequestMethod.PUT)
     public ResponseEntity<Object> updateAthlete(@RequestBody Athlete athlete, @PathVariable int id) throws Exception {
         // TODO
+    	Athlete existingAthlete = service.getAthlete(id);
+    	
+    	Athlete athleteToUpdate = existingAthlete.toBuilder()
+    	.id(Long.valueOf(id))
+    	.firstName(athlete.getFirstName())
+    	.lastName(athlete.getLastName())
+    	.primarySport(athlete.getPrimarySport())
+    	.secondarySport(athlete.getSecondarySport()).build();
+    	
+    	
+    	athlete = service.saveOrUpdateAthlete(athleteToUpdate);
     	Map<String, Object> responseMap = new HashMap<String, Object>();
-    	responseMap.put("message", "Athlete created successfully");
+    	responseMap.put("message", "Athlete updated successfully");
     	responseMap.put("athlete",athlete );
     	
     	return ResponseEntity.ok(responseMap);
@@ -52,9 +64,12 @@ public class AthleteController {
     
     @RequestMapping(value= "/athlete/delete/{id}", method= RequestMethod.DELETE)
     public ResponseEntity<Object> deleteAthleteById(@PathVariable int id) throws Exception {
+    	if(service.getAthlete(id) ==null) {
+    		throw new AthleteNotFoundException(String.format("Athlete with id %d does not exist", id));
+    	}
         service.deleteAthlete(id);
         Map<String, Object> responseMap = new HashMap<String, Object>();
-    	responseMap.put("message", "Athlete updated successfully");
+    	responseMap.put("message", String.format("Athlete with id %d deleted successfully", id));
     	return ResponseEntity.ok(responseMap);
     }
 

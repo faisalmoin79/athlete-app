@@ -18,7 +18,7 @@ import lombok.ToString;
 
 public class ApiError {
     private Date timeStamp;
-    private String errorCode;
+    private String errorType;
     private String message;
     private String path;
 }

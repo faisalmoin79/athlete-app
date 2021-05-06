@@ -17,7 +17,7 @@ public class AthleteService {
 	public Athlete saveOrUpdateAthlete(Athlete athlete) {
 		// TODO Auto-generated method stub
 		if(athlete==null) {
-			throw new IllegalArgumentException("athele can not be null");
+			throw new IllegalArgumentException("athlete can not be null");
 		}
 		return repository.save(athlete);
 	}
@@ -36,7 +36,7 @@ public class AthleteService {
 			throw new IllegalArgumentException("Id must be greater than 1");
 		}
 		// TODO Auto-generated method stub
-		return repository.findById(Long.valueOf(id)).orElseThrow(() -> new AthleteNotFoundException("athele.notFound"));
+		return repository.findById(Long.valueOf(id)).orElseThrow(() -> new AthleteNotFoundException("Athlete Not Found"));
 	}
 
     // TODO: Use AthleteInMemoryRepository
