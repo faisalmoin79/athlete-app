@@ -36,8 +36,7 @@ public class Athlete {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ATHLETE_ID_SEQ")
 	private Long id;
 
-	// TODO: Fill in other athlete details+
-	@Column(nullable = false)
+ 	@Column(nullable = false)
 	private String firstName;
 	
 	@Column(nullable = false)

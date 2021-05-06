@@ -25,8 +25,7 @@ public class AthleteController {
 
     @RequestMapping(value= "/athlete/add", method= RequestMethod.POST)
     public ResponseEntity<Object> createAthlete(@RequestBody Athlete athlete) {
-        // TODO
-    	athlete = service.saveOrUpdateAthlete(athlete);
+     	athlete = service.saveOrUpdateAthlete(athlete);
     	Map<String, Object> responseMap = new HashMap<String, Object>();
     	responseMap.put("message", "Athlete created successfully");
     	responseMap.put("athlete",athlete );
@@ -37,8 +36,7 @@ public class AthleteController {
 
     @RequestMapping(value= "/athlete/update/{id}", method= RequestMethod.PUT)
     public ResponseEntity<Object> updateAthlete(@RequestBody Athlete athlete, @PathVariable int id) throws Exception {
-        // TODO
-    	Athlete existingAthlete = service.getAthlete(id);
+     	Athlete existingAthlete = service.getAthlete(id);
     	
     	Athlete athleteToUpdate = existingAthlete.toBuilder()
     	.id(Long.valueOf(id))
@@ -58,8 +56,7 @@ public class AthleteController {
 
     @RequestMapping(value= "/athlete/{id}", method= RequestMethod.GET)
     public ResponseEntity<Athlete>  getAthleteById(@PathVariable int id) throws Exception {
-        // TODO
-    	return ResponseEntity.ok(service.getAthlete(id));
+     	return ResponseEntity.ok(service.getAthlete(id));
     }
     
     @RequestMapping(value= "/athlete/delete/{id}", method= RequestMethod.DELETE)
