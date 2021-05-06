@@ -4,7 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -18,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -108,11 +112,35 @@ public class AthleteControllerTest {
 	}
 
 	@Test
-	public void shouldReturnNotFoundErrorWhenFetchingAthleteThatDoesNotExist() throws Exception {
+	public void shouldReturnSuccessWhenFetchingAthlete() throws Exception {
+		this.mockMvc
+			.perform(get("/athlete/1"))
+			.andDo(print())
+			.andExpect(status().is2xxSuccessful());
 	}
 
 	@Test
-	public void shouldReturnAthleteWhenFetchingAthleteThatExists() {
+	public void shouldReturnNotFoundErrorWhenDeletingAthleteThatDoesNotExist() throws Exception {
+		int id = 1;
+		this.mockMvc
+		.perform(delete(String.format("/athlete/delete/%d", id)))
+		.andDo(print())
+		.andExpect(status().isNotFound())
+		.andExpect(jsonPath("$.message", is(String.format(ATHLETE_WITH_ID_D_DOES_NOT_EXIST, id))))
+		.andExpect(jsonPath("$.errorType", is(HttpStatus.NOT_FOUND.getReasonPhrase())));
+	}
+	
+	@Test
+	public void shouldSucessfullyDeleteAthleteThatExists() throws Exception {
+		int id = 1;
+		Athlete mockedAthlete= mock(Athlete.class);
+		when(athleteService.getAthlete(ArgumentMatchers.anyInt())).thenReturn(mockedAthlete );
+		
+		this.mockMvc
+		.perform(delete(String.format("/athlete/delete/%d", id)))
+		.andDo(print())
+		.andExpect(status().is2xxSuccessful())
+		.andExpect(jsonPath("$.message", is(String.format(ATHLETE_WITH_ID_D_DELETED_SUCCESSFULLY, id))));
 
 	}
 
