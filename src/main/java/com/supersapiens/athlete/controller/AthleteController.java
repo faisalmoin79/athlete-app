@@ -1,5 +1,10 @@
 package com.supersapiens.athlete.controller;
 
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_CREATED_SUCCESSFULLY;
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_UPDATED_SUCCESSFULLY;
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_WITH_ID_D_DELETED_SUCCESSFULLY;
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_WITH_ID_D_DOES_NOT_EXIST;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +40,7 @@ public class AthleteController {
     public ResponseEntity<Object> createAthlete(@Valid @RequestBody Athlete athlete) {
      	athlete = service.saveOrUpdateAthlete(athlete);
     	Map<String, Object> responseMap = new HashMap<String, Object>();
-    	responseMap.put("message", "Athlete created successfully");
+    	responseMap.put("message", ATHLETE_CREATED_SUCCESSFULLY);
     	responseMap.put("athlete",athlete );
     	
     	return ResponseEntity.ok(responseMap);
@@ -56,7 +61,7 @@ public class AthleteController {
     	
     	athlete = service.saveOrUpdateAthlete(athleteToUpdate);
     	Map<String, Object> responseMap = new HashMap<String, Object>();
-    	responseMap.put("message", "Athlete updated successfully");
+    	responseMap.put("message", ATHLETE_UPDATED_SUCCESSFULLY);
     	responseMap.put("athlete",athlete );
     	
     	return ResponseEntity.ok(responseMap);
@@ -70,14 +75,15 @@ public class AthleteController {
     @RequestMapping(value= "/athlete/delete/{id}", method= RequestMethod.DELETE)
     public ResponseEntity<Object> deleteAthleteById(@PathVariable int id) throws Exception {
     	if(service.getAthlete(id) ==null) {
-    		throw new AthleteNotFoundException(String.format("Athlete with id %d does not exist", id));
+    		throw new AthleteNotFoundException(String.format(ATHLETE_WITH_ID_D_DOES_NOT_EXIST, id));
     	}
         service.deleteAthlete(id);
         Map<String, Object> responseMap = new HashMap<String, Object>();
-    	responseMap.put("message", String.format("Athlete with id %d deleted successfully", id));
+    	responseMap.put("message", String.format(ATHLETE_WITH_ID_D_DELETED_SUCCESSFULLY, id));
     	return ResponseEntity.ok(responseMap);
     }
     
+    // for automatic validation using @Valid with @ReqestBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

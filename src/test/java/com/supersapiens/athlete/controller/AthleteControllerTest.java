@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.supersapiens.athlete.enums.SportTypeEnum;
 import com.supersapiens.athlete.model.Athlete;
 import com.supersapiens.athlete.service.AthleteService;
 
@@ -65,8 +66,23 @@ public class AthleteControllerTest {
 	}
 	
 	@Test
-	public void shouldReturnSucessWhenCreatingAthleteWithValidInfo() {
-		
+	public void shouldReturnSucessWhenCreatingAthleteWithValidInfo() throws Exception{
+		Athlete validAthlete = Athlete.builder()
+				.firstName("Valid")
+				.lastName("Athlete")
+				.primarySport(SportTypeEnum.CYCLING)
+				.secondarySport(SportTypeEnum.SWIMMING)
+				.build();
+		this.mockMvc
+		.perform(
+				post("/athlete/add")
+				.content(getJsonString(validAthlete))
+				.contentType(MediaType.APPLICATION_JSON)
+			    .accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().is2xxSuccessful())
+		.andExpect(jsonPath("$.message", is(FIRST_NAME_IS_REQUIRED)))
+		.andExpect(jsonPath("$.lastName", is(LAST_NAME_IS_REQUIRED)));
 	}
 	
 	@Test
