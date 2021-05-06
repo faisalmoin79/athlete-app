@@ -1,9 +1,13 @@
 package com.supersapiens.athlete.controller;
 
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_CREATED_SUCCESSFULLY;
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_UPDATED_SUCCESSFULLY;
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_WITH_ID_D_DELETED_SUCCESSFULLY;
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_WITH_ID_D_DOES_NOT_EXIST;
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ValidationMsg.FIRST_NAME_IS_REQUIRED;
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ValidationMsg.LAST_NAME_IS_REQUIRED;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -33,12 +37,6 @@ import com.supersapiens.athlete.model.Athlete;
 import com.supersapiens.athlete.service.AthleteService;
 
 import lombok.extern.slf4j.Slf4j;
-import static com.supersapiens.athlete.constant.AthleteAppConstants.ValidationMsg.FIRST_NAME_IS_REQUIRED;
-import static com.supersapiens.athlete.constant.AthleteAppConstants.ValidationMsg.LAST_NAME_IS_REQUIRED;
-import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_CREATED_SUCCESSFULLY;
-import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_UPDATED_SUCCESSFULLY;
-import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_WITH_ID_D_DELETED_SUCCESSFULLY;
-import static com.supersapiens.athlete.constant.AthleteAppConstants.ApiMessages.ATHLETE_WITH_ID_D_DOES_NOT_EXIST;
 
 @ExtendWith(SpringExtension.class) // initialing mocks in JUnit 5
 @WebMvcTest
