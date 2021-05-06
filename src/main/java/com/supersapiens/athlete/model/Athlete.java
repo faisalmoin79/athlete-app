@@ -8,18 +8,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.Check;
-import org.springframework.lang.Nullable;
 
-import com.sun.istack.NotNull;
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ValidationMsg.FIRST_NAME_IS_REQUIRED;
+import static com.supersapiens.athlete.constant.AthleteAppConstants.ValidationMsg.LAST_NAME_IS_REQUIRED;
+
 import com.supersapiens.athlete.enums.SportTypeEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.ToString;
 
 @Getter
@@ -36,12 +37,15 @@ public class Athlete {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ATHLETE_ID_SEQ")
 	private Long id;
 
+	@NotBlank(message = FIRST_NAME_IS_REQUIRED)
  	@Column(nullable = false)
 	private String firstName;
 	
+	@NotBlank(message = LAST_NAME_IS_REQUIRED)
 	@Column(nullable = false)
 	private String lastName;
 	
+//	@NotBlank(message = "primarySport is required.")
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	@Check(constraints = "CHECK (primarySport IN ('CYCLING', 'RUNNING', 'SWIMMING'))")

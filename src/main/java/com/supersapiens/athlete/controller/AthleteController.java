@@ -3,12 +3,20 @@ package com.supersapiens.athlete.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.supersapiens.athlete.exception.AthleteNotFoundException;
@@ -23,8 +31,8 @@ public class AthleteController {
     private AthleteService service;
 
 
-    @RequestMapping(value= "/athlete/add", method= RequestMethod.POST)
-    public ResponseEntity<Object> createAthlete(@RequestBody Athlete athlete) {
+    @RequestMapping(value= "/athlete/add", method= RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Object> createAthlete(@Valid @RequestBody Athlete athlete) {
      	athlete = service.saveOrUpdateAthlete(athlete);
     	Map<String, Object> responseMap = new HashMap<String, Object>();
     	responseMap.put("message", "Athlete created successfully");
@@ -68,6 +76,19 @@ public class AthleteController {
         Map<String, Object> responseMap = new HashMap<String, Object>();
     	responseMap.put("message", String.format("Athlete with id %d deleted successfully", id));
     	return ResponseEntity.ok(responseMap);
+    }
+    
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+      MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 
 }
