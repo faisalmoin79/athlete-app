@@ -36,7 +36,7 @@ public class AthleteController {
     private AthleteService service;
 
 
-    @RequestMapping(value= "/athlete/add", method= RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value= "/athlete/add", method= RequestMethod.POST, produces = {MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<Object> createAthlete(@Valid @RequestBody Athlete athlete) {
      	athlete = service.saveOrUpdateAthlete(athlete);
     	Map<String, Object> responseMap = new HashMap<String, Object>();
@@ -67,7 +67,7 @@ public class AthleteController {
     	return ResponseEntity.ok(responseMap);
     }
 
-    @RequestMapping(value= "/athlete/{id}", method= RequestMethod.GET)
+    @RequestMapping(value= "/athlete/{id}", method= RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<Athlete>  getAthleteById(@PathVariable int id) throws Exception {
      	return ResponseEntity.ok(service.getAthlete(id));
     }
@@ -83,7 +83,7 @@ public class AthleteController {
     	return ResponseEntity.ok(responseMap);
     }
     
-    // for automatic validation using @Valid with @ReqestBody
+    // for automatic validation using @Valid with @RequestBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
