@@ -36,7 +36,7 @@ public class AthleteController {
     private AthleteService service;
 
 
-    @RequestMapping(value= "/athlete/add", method= RequestMethod.POST, produces = {MediaType.APPLICATION_XML_VALUE})
+    @RequestMapping(value= "/athlete/add", method= RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Object> createAthlete(@Valid @RequestBody Athlete athlete) {
      	athlete = service.saveOrUpdateAthlete(athlete);
     	Map<String, Object> responseMap = new HashMap<String, Object>();
